@@ -1,0 +1,8 @@
+torch>=1.10
+torchvision>=0.8.2
+black
+einops
+omegaconf
+matplotlib
+gradio>=3.5.0
+git+https://github.com/openai/CLIP.git
