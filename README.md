@@ -98,7 +98,7 @@ prompt = "a high-resolution photograph of a big red frog on a green leaf."
 image = pipe(prompt).images[0]
 image.save("./frog.png")
 ```
-Check out the [diffusers docs]() for 
+Check out the [diffusers docs](https://huggingface.co/docs/diffusers/api/pipelines/unclip) for the full usage of the `unCLIPPipeline`
 
 ## Environment Setup
 We use a single V100 of 32GB VRAM for sampling under PyTorch >= 1.10 and CUDA >= 11. The following commands install additional python packages and get pretrained model checkpoints. Or, you can simply install the package and download the weights via [setup.sh](setup.sh)
