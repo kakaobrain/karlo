@@ -36,7 +36,7 @@ This alpha version of Karlo is trained on 115M image-text pairs, including [COYO
 ### Updates
 * [2022-12-01] Karlo-v1.0.alpha is released!
 * [2022-12-19] Karlo-v1.0.alpha was [integrated into the 🧨 diffusers library](#-diffusers-integration)
-* [2022-12-20] Karlo-v1.0.alpha was integrated into Huggingface Spaces 🤗 using [Gradio](https://github.com/gradio-app/gradio). Try out the Web Demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/kakaobrain/karlo)
+* [2022-12-20] Karlo-v1.0.alpha was integrated into Hugging Face Spaces 🤗 using [Gradio](https://github.com/gradio-app/gradio). Try out the Web Demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/kakaobrain/karlo)
 
 ## Model Architecture
 
@@ -169,7 +169,7 @@ If you find this repository useful in your research, please cite:
 
 ## Acknowledgement
 * We deeply appreciate all the contributors to OpenAI’s [Guided-Diffusion](https://github.com/openai/guided-diffusion) project. 
-* We also greatly appreciate [Apolinário Passos](https://github.com/apolinario) and [Will Berman](https://github.com/williamberman) from Huggingface for integrating this model to [diffusers](https://github.com/huggingface/diffusers). 
+* We also greatly appreciate [Apolinário Passos](https://github.com/apolinario) and [Will Berman](https://github.com/williamberman) from Hugging Face for integrating this model to [diffusers](https://github.com/huggingface/diffusers). 
 
 ## Contact
 If you would like to collaborate with us or share a feedback, please e-mail to us, contact@kakaobrain.com
