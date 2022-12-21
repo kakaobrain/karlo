@@ -168,7 +168,8 @@ If you find this repository useful in your research, please cite:
 ```
 
 ## Acknowledgement
-We deeply appreciate all the contributors to OpenAI’s [Guided-Diffusion](https://github.com/openai/guided-diffusion) project.
+* We deeply appreciate all the contributors to OpenAI’s [Guided-Diffusion](https://github.com/openai/guided-diffusion) project. 
+* We also greatly appreciate [Apolinário Passos](https://github.com/apolinario) and [Will Berman](https://github.com/williamberman) from Huggingface for integrating this model to [diffusers](https://github.com/huggingface/diffusers). 
 
 ## Contact
 If you would like to collaborate with us or share a feedback, please e-mail to us, contact@kakaobrain.com
