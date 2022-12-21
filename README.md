@@ -35,6 +35,8 @@ This alpha version of Karlo is trained on 115M image-text pairs, including [COYO
 
 ### Updates
 * [2022-12-01] Karlo-v1.0.alpha is released!
+* [2022-12-19] Karlo-v1.0.alpha was [integrated into the 🧨 diffusers library](#-diffusers-integration)
+* [2022-12-20] Karlo-v1.0.alpha was integrated into Huggingface Spaces 🤗 using [Gradio](https://github.com/gradio-app/gradio). Try out the Web Demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/multimodalart/latentdiffusion)
 
 ## Model Architecture
 
@@ -78,6 +80,25 @@ MS-COCO
 
 For more information, please refer to the upcoming technical report.
 
+## 🧨 Diffusers integration
+Our unCLIP implemenetation is officially integrated in the [🧨 diffusers library](https://huggingface.co/docs/diffusers/api/pipelines/unclip)
+```
+#Requisits to run Karlo unCLIP on diffusers
+pip install diffusers transformers accelerate safetensors
+```
+
+```py
+from diffusers import UnCLIPPipeline
+import torch
+
+pipe = UnCLIPPipeline.from_pretrained("kakaobrain/karlo-v1-alpha", torch_dtype=torch.float16)
+pipe = pipe.to('cuda')
+
+prompt = "a high-resolution photograph of a big red frog on a green leaf."
+image = pipe(prompt).images[0]
+image.save("./frog.png")
+```
+Check out the [diffusers docs](https://huggingface.co/docs/diffusers/api/pipelines/unclip) for the full usage of the `unCLIPPipeline`
 
 ## Environment Setup
 We use a single V100 of 32GB VRAM for sampling under PyTorch >= 1.10 and CUDA >= 11. The following commands install additional python packages and get pretrained model checkpoints. Or, you can simply install the package and download the weights via [setup.sh](setup.sh)
