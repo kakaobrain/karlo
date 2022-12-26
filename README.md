@@ -44,7 +44,7 @@ This alpha version of Karlo is trained on 115M image-text pairs, including [COYO
 Karlo is a text-conditional diffusion model based on unCLIP, composed of prior, decoder, and super-resolution modules. In this repository, we include the improved version of the standard super-resolution module for upscaling 64px to 256px only in 7 reverse steps, as illustrated in the figure below:
 
 <p float="left">
-  <img src="/assets/improved_sr_arch.png"/>
+  <img src="/assets/improved_sr_arch.jpg"/>
 </p>
 
 In specific, the standard SR module trained by DDPM objective upscales 64px to 256px in the first 6 denoising steps based on the respacing technique. Then, the additional fine-tuned SR module trained by [VQ-GAN](https://compvis.github.io/taming-transformers/)-style loss performs the final reverse step to recover high-frequency details. We observe that this approach is very effective to upscale the low-resolution in a small number of reverse steps.
@@ -63,7 +63,7 @@ We train all components from scratch on 115M image-text pairs including COYO-100
 In the checkpoint links, ViT-L-14 is equivalent to the original version, but we include it for convenience. We also remark that ViT-L-14-stats is required to normalize the outputs of the prior module.
 
 ### Evaluation
-We quantitatively measure the performance of Karlo-v1.0.alpha in the validation split of CC3M and MS-COCO. The table below presents CLIP-score and FID. To measure FID, we resize the image of the shorter side to 256px, followed by cropping it at the center. We set classifier-free guidance scales for prior and decoder to 4 and 8 in all cases. We observe that our model achieves reasonable performance even with 25 sampling steps of decoder. 
+We quantitatively measure the performance of Karlo-v1.0.alpha in the validation split of CC3M and MS-COCO. The table below presents CLIP-score and FID. To measure FID, we resize the image of the shorter side to 256px, followed by cropping it at the center. We set classifier-free guidance scales for prior and decoder to 4 and 8 in all cases. We observe that our model achieves reasonable performance even with 25 sampling steps of decoder.
 
 CC3M
 | Sampling step | CLIP-s (ViT-B/16) | FID (13k from val)|
@@ -168,8 +168,8 @@ If you find this repository useful in your research, please cite:
 ```
 
 ## Acknowledgement
-* We deeply appreciate all the contributors to OpenAI’s [Guided-Diffusion](https://github.com/openai/guided-diffusion) project. 
-* We also greatly appreciate [Apolinário Passos](https://github.com/apolinario) and [Will Berman](https://github.com/williamberman) from Huggingface for integrating this model to [diffusers](https://github.com/huggingface/diffusers). 
+* We deeply appreciate all the contributors to OpenAI’s [Guided-Diffusion](https://github.com/openai/guided-diffusion) project.
+* We also greatly appreciate [Apolinário Passos](https://github.com/apolinario) and [Will Berman](https://github.com/williamberman) from Huggingface for integrating this model to [diffusers](https://github.com/huggingface/diffusers).
 
 ## Contact
 If you would like to collaborate with us or share a feedback, please e-mail to us, contact@kakaobrain.com
