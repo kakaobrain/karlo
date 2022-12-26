@@ -13,6 +13,13 @@ from .template import BaseSampler, CKPT_PATH
 
 
 class T2ISampler(BaseSampler):
+    """
+    A sampler for text-to-image generation.
+
+    :param root_dir: directory for model checkpoints.
+    :param sampling_type: ["default", "fast"]
+    """
+
     def __init__(
         self,
         root_dir: str,
