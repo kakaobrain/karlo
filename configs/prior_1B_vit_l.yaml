@@ -7,10 +7,8 @@ model:
     xf_layers: 20
     xf_heads: 32
     xf_final_ln: true
-    xf_padding: false
     text_drop: 0.2
     clip_dim: 768
-    clip_xf_width: 768
 
 diffusion:
   steps: 1000

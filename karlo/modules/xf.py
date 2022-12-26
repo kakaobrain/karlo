@@ -138,13 +138,12 @@ class PriorTransformer(nn.Module):
     """
     A Causal Transformer that conditions on CLIP text embedding, text.
 
-    Expects an extra kwarg `tokens` of text.
-
     :param text_ctx: number of text tokens to expect.
     :param xf_width: width of the transformer.
     :param xf_layers: depth of the transformer.
     :param xf_heads: heads in the transformer.
     :param xf_final_ln: use a LayerNorm after the output layer.
+    :param clip_dim: dimension of clip feature.
     """
 
     def __init__(
@@ -154,9 +153,7 @@ class PriorTransformer(nn.Module):
         xf_layers,
         xf_heads,
         xf_final_ln,
-        xf_padding,
         clip_dim,
-        clip_xf_width,
     ):
         super().__init__()
 
@@ -164,9 +161,7 @@ class PriorTransformer(nn.Module):
         self.xf_width = xf_width
         self.xf_layers = xf_layers
         self.xf_heads = xf_heads
-        self.xf_padding = xf_padding
         self.clip_dim = clip_dim
-        self.clip_xf_width = clip_xf_width
         self.ext_len = 4
 
         self.time_embed = nn.Sequential(
@@ -174,7 +169,7 @@ class PriorTransformer(nn.Module):
             nn.SiLU(),
             nn.Linear(xf_width, xf_width),
         )
-        self.text_enc_proj = nn.Linear(clip_xf_width, xf_width)
+        self.text_enc_proj = nn.Linear(clip_dim, xf_width)
         self.text_emb_proj = nn.Linear(clip_dim, xf_width)
         self.clip_img_proj = nn.Linear(clip_dim, xf_width)
         self.out_proj = nn.Linear(xf_width, clip_dim)
@@ -193,12 +188,6 @@ class PriorTransformer(nn.Module):
             th.empty(1, text_ctx + self.ext_len, xf_width)
         )
         self.prd_emb = nn.Parameter(th.randn((1, 1, xf_width)))
-
-        if self.xf_padding:
-            self.padding_embedding = nn.Parameter(
-                th.empty(text_ctx + self.ext_len, xf_width)
-            )
-            nn.init.normal_(self.padding_embedding, std=0.01)
 
         nn.init.normal_(self.prd_emb, std=0.01)
         nn.init.normal_(self.positional_embedding, std=0.01)
@@ -229,10 +218,6 @@ class PriorTransformer(nn.Module):
         ]
         input = th.cat(input_seq, dim=1)
         input = input + self.positional_embedding.to(input.dtype)
-        if self.xf_padding:
-            input = th.where(
-                mask[..., None], input, self.padding_embedding[None].to(input.dtype)
-            )
 
         mask = th.where(mask, 0.0, float("-inf"))
         mask = (mask[:, None, :] + causal_mask).to(input.dtype)

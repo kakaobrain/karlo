@@ -11,6 +11,15 @@ from ..modules.xf import PriorTransformer
 
 
 class PriorDiffusionModel(torch.nn.Module):
+    """
+    A prior that generates clip image feature based on the text prompt.
+
+    :param config: yaml config to define the decoder.
+    :param tokenizer: tokenizer used in clip.
+    :param clip_mean: mean to normalize the clip image feature (zero-mean, unit variance).
+    :param clip_std: std to noramlize the clip image feature (zero-mean, unit variance).
+    """
+
     def __init__(self, config, tokenizer, clip_mean, clip_std):
         super().__init__()
 
@@ -40,9 +49,7 @@ class PriorDiffusionModel(torch.nn.Module):
             xf_layers=self._model_conf.xf_layers,
             xf_heads=self._model_conf.xf_heads,
             xf_final_ln=self._model_conf.xf_final_ln,
-            xf_padding=self._model_conf.xf_padding,
             clip_dim=self._model_conf.clip_dim,
-            clip_xf_width=self._model_conf.clip_xf_width,
         )
 
         cf_token, cf_mask = self.set_cf_text_tensor()

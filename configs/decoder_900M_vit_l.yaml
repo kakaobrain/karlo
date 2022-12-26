@@ -19,10 +19,8 @@ model:
     xf_layers: 0
     xf_heads: 0
     xf_final_ln: false
-    xf_padding: false
     resblock_updown: true
     learn_sigma: true
-    cache_text_emb: false
     text_drop: 0.3
     clip_emb_type: image
     clip_emb_drop: 0.1

@@ -11,6 +11,13 @@ from ..modules.unet import PLMImUNet
 
 
 class Text2ImProgressiveModel(torch.nn.Module):
+    """
+    A decoder that generates 64x64px images based on the text prompt.
+
+    :param config: yaml config to define the decoder.
+    :param tokenizer: tokenizer used in clip.
+    """
+
     def __init__(
         self,
         config,

@@ -13,6 +13,14 @@ from .template import BaseSampler, CKPT_PATH
 
 
 class I2ISampler(BaseSampler):
+    """
+    A sampler for image variation. In the original unclip paper, image variation transforms the noise obtained by DDIM inversion into a sample in RGB space.
+    Here, we simply transform the white noise to image, conditioned on the clip image feature.
+
+    :param root_dir: directory for model checkpoints.
+    :param sampling_type: ["default", "fast"]
+    """
+
     def __init__(
         self,
         root_dir: str,

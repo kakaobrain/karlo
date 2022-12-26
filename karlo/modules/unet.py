@@ -421,6 +421,7 @@ class UNetModel(nn.Module):
     :param conv_resample: if True, use learned convolutions for upsampling and
         downsampling.
     :param dims: determines if the signal is 1D, 2D, or 3D.
+    :param clip_dim: dimension of clip feature.
     :param num_classes: if specified (as an int), then this model will be
         class-conditional with `num_classes` classes.
     :param use_checkpoint: use gradient checkpointing to reduce memory usage.
@@ -431,6 +432,8 @@ class UNetModel(nn.Module):
                                of heads for upsampling. Deprecated.
     :param use_scale_shift_norm: use a FiLM-like conditioning mechanism.
     :param resblock_updown: use residual blocks for up/downsampling.
+    :param encoder_channels: use to make the dimension of query and kv same in AttentionBlock.
+    :param use_time_embedding: use time embedding for condition.
     """
 
     def __init__(
@@ -672,6 +675,7 @@ class SuperResUNetModel(UNetModel):
     A UNetModel that performs super-resolution.
 
     Expects an extra kwarg `low_res` to condition on a low-resolution image.
+    Assumes that the shape of low-resolution and the input should be the same.
     """
 
     def __init__(self, *args, **kwargs):
@@ -686,22 +690,21 @@ class SuperResUNetModel(UNetModel):
 
     def forward(self, x, timesteps, low_res=None, **kwargs):
         _, _, new_height, new_width = x.shape
-        upsampled = F.interpolate(low_res, (new_height, new_width), mode="bilinear")
-        x = th.cat([x, upsampled], dim=1)
+        assert new_height == low_res.shape[2] and new_width == low_res.shape[3]
+
+        x = th.cat([x, low_res], dim=1)
         return super().forward(x, timesteps, **kwargs)
 
 
 class PLMImUNet(UNetModel):
     """
-    A UNetModel that conditions on text with an encoding transformer.
-
-    Expects an extra kwarg `tokens` of text.
+    A UNetModel that conditions on text with a pretrained text encoder in CLIP.
 
     :param text_ctx: number of text tokens to expect.
     :param xf_width: width of the transformer.
-    :param xf_layers: depth of the transformer.
-    :param xf_heads: heads in the transformer.
-    :param xf_final_ln: use a LayerNorm after the output layer.
+    :param clip_emb_mult: #extra tokens by projecting clip text feature.
+    :param clip_emb_type: type of condition (here, we fix clip image feature).
+    :param clip_emb_drop: dropout rato of clip image feature for cfg.
     """
 
     def __init__(
@@ -725,7 +728,7 @@ class PLMImUNet(UNetModel):
         else:
             super().__init__(*args, **kwargs, encoder_channels=xf_width)
 
-        # Project text encoded feat seq from pre-trained LM
+        # Project text encoded feat seq from pre-trained text encoder in CLIP
         self.text_seq_proj = nn.Sequential(
             nn.Linear(self.clip_dim, xf_width),
             LayerNorm(xf_width),
@@ -733,13 +736,13 @@ class PLMImUNet(UNetModel):
         # Project CLIP text feat
         self.text_feat_proj = nn.Linear(self.clip_dim, self.model_channels * 4)
 
-        if self.clip_emb_mult is not None:
-            assert (
-                self.clip_dim is not None
-            ), "CLIP representation dim should be specified"
-            self.clip_tok_proj = nn.Linear(
-                self.clip_dim, self.xf_width * self.clip_emb_mult
-            )
+        assert clip_emb_mult is not None
+        assert clip_emb_type == "image"
+        assert self.clip_dim is not None, "CLIP representation dim should be specified"
+
+        self.clip_tok_proj = nn.Linear(
+            self.clip_dim, self.xf_width * self.clip_emb_mult
+        )
         if self.clip_emb_drop > 0:
             self.cf_param = nn.Parameter(th.empty(self.clip_dim, dtype=th.float32))
 
@@ -761,21 +764,19 @@ class PLMImUNet(UNetModel):
         bsz = x.shape[0]
         hs = []
         emb = self.time_embed(timestep_embedding(timesteps, self.model_channels))
-        if self.clip_dim is not None:
-            emb = emb + self.clip_emb(y)
+        emb = emb + self.clip_emb(y)
 
         xf_out = self.text_seq_proj(txt_feat_seq)
         xf_out = xf_out.permute(0, 2, 1)
         emb = emb + self.text_feat_proj(txt_feat)
-        if self.clip_emb_mult is not None:
-            xf_out = th.cat(
-                [
-                    self.clip_tok_proj(y).reshape(bsz, -1, self.clip_emb_mult),
-                    xf_out,
-                ],
-                dim=2,
-            )
-            mask = F.pad(mask, (self.clip_emb_mult, 0), value=True)
+        xf_out = th.cat(
+            [
+                self.clip_tok_proj(y).reshape(bsz, -1, self.clip_emb_mult),
+                xf_out,
+            ],
+            dim=2,
+        )
+        mask = F.pad(mask, (self.clip_emb_mult, 0), value=True)
         mask = th.where(mask, 0.0, float("-inf"))
 
         h = x
