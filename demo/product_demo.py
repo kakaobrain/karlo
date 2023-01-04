@@ -89,7 +89,7 @@ class GradioDemo:
 def default_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root-dir", type=str, default=None)
-    parser.add_argument("--max_bsz", type=int, default=4)
+    parser.add_argument("--max_bsz", type=int, default=1)
     parser.add_argument(
         "--progressive", type=str, default="loop", choices=("loop", "stage", "final")
     )
