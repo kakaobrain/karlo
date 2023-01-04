@@ -104,8 +104,9 @@ class SpacedDiffusion(GaussianDiffusion):
 
     def _wrap_model(self, model):
         def wrapped(x, ts, **kwargs):
+            ts_cpu = ts.detach().to("cpu")
             return model(
-                x, self.timestep_map[ts].to(device=ts.device, dtype=ts.dtype), **kwargs
+                x, self.timestep_map[ts_cpu].to(device=ts.device, dtype=ts.dtype), **kwargs
             )
 
         return wrapped
