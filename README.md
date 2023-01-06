@@ -37,6 +37,7 @@ This alpha version of Karlo is trained on 115M image-text pairs, including [COYO
 * [2022-12-01] Karlo-v1.0.alpha is released!
 * [2022-12-19] Karlo-v1.0.alpha was [integrated into the 🧨 diffusers library](#-diffusers-integration)
 * [2022-12-20] Karlo-v1.0.alpha was integrated into Huggingface Spaces 🤗 using [Gradio](https://github.com/gradio-app/gradio). Try out the Web Demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/kakaobrain/karlo)
+* [2022-12-23] Karlo-v1.0.alpha was integrated into GPUX Inference. Try out the Web UI: [![GPUX Inference](https://gpux.ai/badge2.svg)](https://explorer.gpux.ai/inference/gpux/karlo)
 
 ## Model Architecture
 
