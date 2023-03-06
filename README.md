@@ -118,9 +118,12 @@ wget https://arena.kakaocdn.net/brainrepo/models/karlo-public/v1.0.0.alpha/4226b
 ## Sampling
 
 ### Gradio demo (T2I and Image variation)
-The following command launches gradio demo for text-to-image generation and image variation. We notice that the second run in the gradio is unexpectedly slower than the usual case in PyTorch>=1.12. We guess that this happens because launching the cuda kernels takes some time, usually up to 2 minutes.
+The following command launches gradio demo for text-to-image generation and image variation. 
+We notice that the second run in the gradio is unexpectedly slower than the usual case in PyTorch>=1.12. 
+We guess that this happens because launching the cuda kernels takes some time, usually up to 2 minutes. 
+Add `--use_bf16` to use `bfloat16` precision to be able to run on one 11GB GPU.
 ```
-python demo/product_demo.py --host 0.0.0.0 --port $PORT --root-dir $KARLO_ROOT_DIR
+python demo/product_demo.py --host 0.0.0.0 --port $PORT --root-dir $KARLO_ROOT_DIR [--use_bf16]
 ```
 
 Samples below are non-cherry picked T2I and image variation examples of random seed 0.
@@ -145,12 +148,14 @@ In each case, the first row shows T2I samples and the second shows the image var
 
 ### T2I command line example
 Here, we include the command line example of T2I. For image variation, you can refer to [karlo/sampler/i2i.py](karlo/sampler/i2i.py) on how to replace the prior into the clip image feature.
+Add `--use_bf16` to use `bfloat16` precision to be able to run on one 11GB GPU.
 ```python
 python example.py --root-dir=$KARLO_ROOT_DIR \
                   --prompt="A man with a face of avocado, in the drawing style of Rene Magritte" \
                   --output-dir=$OUTPUT_DIR \
                   --max-bsz=2 \
-                  --sampling-type=fast
+                  --sampling-type= \
+                  --use_bf16
 ```
 
 ## Licence and Disclaimer

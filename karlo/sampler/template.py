@@ -50,6 +50,7 @@ class BaseSampler:
         self,
         root_dir: str,
         sampling_type: str = "fast",
+        use_bf16: bool = False,
     ):
         self._root_dir = root_dir
 
@@ -64,6 +65,7 @@ class BaseSampler:
         self._decoder_cf_scale = sampling_type["decoder_cf_scale"]
 
         self._sr_sm = sampling_type["sr_sm"]
+        self._use_bf16 = use_bf16
 
     def __repr__(self):
         line = ""
@@ -77,10 +79,11 @@ class BaseSampler:
         clip = CustomizedCLIP.load_from_checkpoint(
             os.path.join(self._root_dir, clip_path)
         )
+        if self._use_bf16:
+            clip.bfloat16()
         clip = torch.jit.script(clip)
         clip.cuda()
         clip.eval()
-
         self._clip = clip
         self._tokenizer = CustomizedTokenizer()
 
@@ -104,6 +107,8 @@ class BaseSampler:
             os.path.join(self._root_dir, ckpt_path),
             strict=True,
         )
+        if self._use_bf16:
+            prior.bfloat16()
         prior.cuda()
         prior.eval()
         logging.info("done.")
@@ -120,6 +125,8 @@ class BaseSampler:
             os.path.join(self._root_dir, ckpt_path),
             strict=True,
         )
+        if self._use_bf16:
+            decoder.bfloat16()
         decoder.cuda()
         decoder.eval()
         logging.info("done.")
@@ -133,6 +140,7 @@ class BaseSampler:
         sr = self._SR256_CLASS.load_from_checkpoint(
             config, os.path.join(self._root_dir, ckpt_path), strict=True
         )
+        sr.bfloat16()
         sr.cuda()
         sr.eval()
         logging.info("done.")
