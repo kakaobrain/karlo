@@ -37,6 +37,12 @@ def default_parser():
     parser.add_argument(
         "--prompt", type=str, default="A photo of a baby puppy waiting for her mom."
     )
+    parser.add_argument(
+        "--use_bf16",
+        action="store_true",
+        default=False,
+        help="If true, use bf16 for inference."
+    )
     parser.add_argument("--seed", type=int, default=0)
 
     return parser
@@ -58,6 +64,7 @@ if __name__ == "__main__":
         clip_model_path="ViT-L-14.pt",
         clip_stat_path="ViT-L-14_stats.th",
         sampling_type=args.sampling_type,
+        use_bf16=args.use_bf16,
     )
 
     for i in range(5):

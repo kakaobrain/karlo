@@ -19,14 +19,16 @@ class I2ISampler(BaseSampler):
 
     :param root_dir: directory for model checkpoints.
     :param sampling_type: ["default", "fast"]
+    :param use_bf16: If true, use bf16 for inference.
     """
 
     def __init__(
         self,
         root_dir: str,
         sampling_type: str = "default",
+        use_bf16: bool = False,
     ):
-        super().__init__(root_dir, sampling_type)
+        super().__init__(root_dir, sampling_type, use_bf16)
 
     @classmethod
     def from_pretrained(

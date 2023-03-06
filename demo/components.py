@@ -43,11 +43,13 @@ class GradioSampler:
         max_bsz,
         progressive,
         sampling_type: str,
+        use_bf16: bool = False,
     ):
         self._root_dir = root_dir
         self._max_bsz = max_bsz
         self._progressive = progressive
         self._sampling_type = sampling_type
+        self._use_bf16 = use_bf16
 
         self.load_ckpt()
         self.set_options_from_sampler()
@@ -55,7 +57,7 @@ class GradioSampler:
         self.result_queue = Queue()
 
     def load_ckpt(self):
-        base_sampler = BaseSampler(root_dir=self._root_dir)
+        base_sampler = BaseSampler(root_dir=self._root_dir, use_bf16=self._use_bf16)
         base_sampler.load_clip(clip_path="ViT-L-14.pt")
         base_sampler.load_prior(
             f"{CKPT_PATH['prior']}",
@@ -65,10 +67,10 @@ class GradioSampler:
         base_sampler.load_sr_64_256(f"{CKPT_PATH['sr_256']}")
 
         self.t2i_sampler = T2ISampler(
-            root_dir=self._root_dir, sampling_type=self._sampling_type
+            root_dir=self._root_dir, sampling_type=self._sampling_type, use_bf16=self._use_bf16
         )
         self.i2i_sampler = I2ISampler(
-            root_dir=self._root_dir, sampling_type=self._sampling_type
+            root_dir=self._root_dir, sampling_type=self._sampling_type, use_bf16=self._use_bf16
         )
 
         self.t2i_sampler._clip = base_sampler._clip

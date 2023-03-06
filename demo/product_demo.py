@@ -22,12 +22,14 @@ class GradioDemo:
         max_bsz: int,
         progressive: str,
         sampling_type: str,
+        use_bf16: bool = False,
     ):
         sampler = GradioSampler(
             root_dir=root_dir,
             max_bsz=max_bsz,
             progressive=progressive,
             sampling_type=sampling_type,
+            use_bf16=use_bf16,
         )
 
         demo = gr.Blocks()
@@ -102,7 +104,12 @@ def default_parser():
         default="fast",
         choices=("fast", "default"),
     )
-
+    parser.add_argument(
+        "--use_bf16",
+        action="store_true",
+        default=False,
+        help="If true, use bf16 for inference."
+    )
     return parser
 
 
@@ -121,5 +128,6 @@ if __name__ == "__main__":
         max_bsz=args.max_bsz,
         progressive=args.progressive,
         sampling_type=args.sampling_type,
+        use_bf16=args.use_bf16,
     )
     gradio_demo.demo.launch(server_name=args.host, server_port=args.port)
