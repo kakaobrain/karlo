@@ -37,11 +37,13 @@ class I2ISampler(BaseSampler):
         clip_model_path: str,
         clip_stat_path: str,
         sampling_type: str = "default",
+        use_bf16: bool = False,
     ):
 
         model = cls(
             root_dir=root_dir,
             sampling_type=sampling_type,
+            use_bf16=use_bf16,
         )
         model.load_clip(clip_model_path)
         model.load_decoder(f"{CKPT_PATH['decoder']}")
